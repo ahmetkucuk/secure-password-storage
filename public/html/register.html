@@ -1,0 +1,52 @@
+<div class="registeration_view row">
+    <div class="col-md-4 col-md-offset-4">
+        <form name="userRegisterForm" role="form" class="form-horizontal">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" data-ng-model="user.name" placeholder="Ahmet Kucuk" required>
+                    <span data-ng-show="userRegisterForm.name.$error.required" class="help-inline">Required</span>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="email">Email</label>
+                    <input type="text" class="form-control" id="email" name="email" data-ng-model="user.email" placeholder="example@gmail.com" required>
+                    <span data-ng-show="userRegisterForm.email.$error.required" class="help-inline">Required</span>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" data-ng-model="user.phone" placeholder="14702362366" required>
+                    <span data-ng-show="userRegisterForm.phone.$error.required" class="help-inline">Required</span>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" ng-model="user.password" data-ng-class="{'ng-invalid':userRegisterForm.confirmPassword.$error.pwmatch}" required/>
+                    <span data-ng-show="userRegisterForm.password.$error.required" class="help-inline">Required</span>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Confirm Password</label>
+                    <input class="form-control" ng-model="user.passwordConfirm" type="password" data-match="user.password" name="confirmPassword" />
+                </div>
+
+                <div class="msg-block" ng-show="userRegisterForm.$error">
+                    <span class="msg-error" ng-show="userRegisterForm.confirmPassword.$error.pwmatch">
+                        Passwords don't match.
+                    </span>
+                </div>
+                {{operationResultMessage}}
+
+                <br />
+
+                <!--<a href="/" class="btn btn-default">Cancel</a>-->
+                <button data-ng-click="go('/login')" class="btn btn-default">Cancel</button>
+                <button data-ng-click="register()" data-ng-disabled="userRegisterForm.$invalid || userRegisterForm.confirmPassword.$error.pwmatch" class="btn btn-success">Register</button>
+            </fieldset>
+        </form>
+
+    </div>
+</div>

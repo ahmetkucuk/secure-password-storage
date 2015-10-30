@@ -1,0 +1,66 @@
+body {
+    padding-top: 120px;
+    font-family: Sans-serif;
+    font-size: 14px;
+}
+
+#container {
+    margin: 20px;
+    padding: 20px;
+}
+
+#footer {
+    background: aliceblue;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#footer_text {
+    margin-top: 10px;
+}
+
+#alertMsg {
+    display: none;
+}
+
+#no_data_alert {
+    display: none;
+}
+
+.registeration_view {
+    margin-bottom: 50px;
+}
+
+td, th {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#user_screen_title {
+    font-size: 32px;
+    text-align: center;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    line-height: 1em;
+    color: #66aeeb;
+    font-weight:bold;
+}
+
+#user_screen_subtitle {
+    margin-bottom: 50px;
+    font-size: 20px;
+    text-align: center;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    line-height: 1em;
+    color: #66aeeb;
+    font-weight:bold;
+}
+
+.filter_div {
+    margin-bottom: 20px;
+}
+
+.request_a_book {
+    margin-bottom: 20px;
+}
