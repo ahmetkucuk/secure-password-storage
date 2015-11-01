@@ -85,13 +85,39 @@ app.controller("HomeCtrl", ["$scope","$resource", "$location", "apiUrl", functio
 
     console.log("in HomeController");
 
-    $scope.addBeacon = function() {
-        console.log($scope.beacon);
-        var CreateBeaconFromRequested = $resource(apiUrl + "/beacon/add")
-        CreateBeaconFromRequested.save($scope.beacon, function(response) {
+    $scope.shouldShowSecretInput = false;
 
-    });
-}
+    getTexts = function() {
+        var SecureTextList = $resource(apiUrl + "user/secure/text/all"); // a RESTful-capable resource object
+        SecureTextList.get(function(response) {
+            $scope.texts = response.data.textList;
+
+        });
+    };
+    getTexts();
+
+    $scope.addText = function() {
+        console.log($scope.text);
+        var AddTextFromRequested = $resource(apiUrl + "user/secure/text")
+        AddTextFromRequested.save($scope.text, function (response) {
+            console.log(response);
+            getTexts();
+        });
+    };
+
+    $scope.decryptTexts = function() {
+        $scope.shouldShowSecretInput = true;
+        console.log($scope.text);
+        var SendSecret = $resource(apiUrl + "user/send/secret")
+        SendSecret.get(function(response) {
+            $scope.statusMessage = "secret is sended"
+
+        });
+    }
+
+    $scope.useThisSecret = function() {
+        $scope.statusMessage = ""
+    };
 }]);
 
 app.controller("RegisterCtrl", ["$scope", "$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {

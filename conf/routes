@@ -3,28 +3,30 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.ApplicationController.home
-GET        /login                    controllers.ApplicationController.home
-GET        /register                    controllers.ApplicationController.home
-GET        /error                    controllers.ApplicationController.error
+GET           /                               controllers.ApplicationController.home
+GET           /login                          controllers.ApplicationController.home
+GET           /register                       controllers.ApplicationController.home
+GET           /error                          controllers.ApplicationController.error
 
 #API
-GET     /api/user/secure/text                         controllers.APIController.addSecureText
+POST           /api/user/secure/text           controllers.APIController.addSecureText
+GET            /api/user/secure/text/all                         controllers.APIController.getSecureTexts
+GET            /api/user/send/secret                         controllers.APIController.sendSecret
 
 
 
-GET           /api/users                                   third.webcore.controllers.UserController.index
-POST          /api/user/renewPass                          third.webcore.controllers.UserController.renewPassword
-POST          /api/user/login                              third.webcore.controllers.UserController.login
-POST          /api/user/register                           third.webcore.controllers.UserController.register
-GET           /api/user/detail                             third.webcore.controllers.UserController.getUser
-GET           /api/user/:id                                third.webcore.controllers.UserController.get(id: String)
-DELETE        /api/user/:email                             third.webcore.controllers.UserController.deleteUser(email)
-POST          /api/user/role                               third.webcore.controllers.UserController.changeUserRole
-POST          /api/user/changePassword                     third.webcore.controllers.UserController.changePassword
+GET           /api/users                      third.webcore.controllers.UserController.index
+POST          /api/user/renewPass             third.webcore.controllers.UserController.renewPassword
+POST          /api/user/login                 third.webcore.controllers.UserController.login
+POST          /api/user/register              third.webcore.controllers.UserController.register
+GET           /api/user/detail                third.webcore.controllers.UserController.getUser
+GET           /api/user/:id                   third.webcore.controllers.UserController.get(id: String)
+DELETE        /api/user/:email                third.webcore.controllers.UserController.deleteUser(email)
+POST          /api/user/role                  third.webcore.controllers.UserController.changeUserRole
+POST          /api/user/changePassword        third.webcore.controllers.UserController.changePassword
 #POST          /api/user/forgotPassword                     third.webcore.controllers.UserController.forgotPasswordlogin
 
 # Map static resources from the /public folder to the /assets URL path
 
-GET        /assets/*file        controllers.Assets.at(path="/public", file)
-GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
+GET           /assets/*file                   controllers.Assets.at(path="/public", file)
+GET           /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)

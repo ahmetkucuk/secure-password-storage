@@ -14,9 +14,9 @@ object Constants {
   }
 
   object TextQueries {
-    val INSERT: String = "INSERT INTO SECURE_TEXT(text, email) VALUES('%s', '%s')"
-    val ALL: String = "SELECT * FROM SECURE_TEXT"
-    val SELECT_BY_EMAIL: String = "SELECT * FROM SECURE_TEXT WHERE email = '%s"
+    val INSERT: String = "INSERT INTO TEXT(text, email) VALUES('%s', '%s')"
+    val ALL: String = "SELECT * FROM TEXT"
+    val SELECT_BY_EMAIL: String = "SELECT * FROM TEXT WHERE email = '%s'"
   }
 
   object SessionQueries {

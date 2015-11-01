@@ -18,7 +18,7 @@ case class SecureText(id: Int, text: String, email: String) {
   def toJson(): JsValue = {
     JsObject(Seq("id" -> Json.toJson(id),
       "email" -> Json.toJson(email),
-      "text" -> Json.toJson(email)
+      "text" -> Json.toJson(text)
     ))
   }
 }

@@ -1,6 +1,7 @@
 package dao
 
 import java.sql.{Statement, ResultSet}
+import play.api.Logger
 import play.api.db.DB
 import play.api.Play.current
 import third.webcore.models.{SessionStatus, User}
@@ -20,7 +21,7 @@ object SQL {
 
     val stmt = ds.createStatement()
     stmt.execute("DROP TABLE IF EXISTS USER;CREATE TABLE USER(email VARCHAR, name VARCHAR, phone VARCHAR, password VARCHAR, role VARCHAR, PRIMARY KEY(email))")
-    stmt.execute("DROP TABLE IF EXISTS SECURE_TEXT;CREATE TABLE SECURE_TEXT(pass_id INT NOT NULL AUTO_INCREMENT, text VARCHAR, email INT, FOREIGN KEY (email) REFERENCES USER(email))")
+    stmt.execute("DROP TABLE IF EXISTS TEXT;CREATE TABLE TEXT(pass_id INT NOT NULL AUTO_INCREMENT, text VARCHAR, email VARCHAR, FOREIGN KEY (email) REFERENCES USER(email))")
     stmt.execute("DROP TABLE IF EXISTS SESSION;CREATE TABLE SESSION(email VARCHAR, session_id VARCHAR, valid_until LONG)")
 
     stmt.execute("INSERT INTO USER(email, name) VALUES('ahmetkucuk92@gmail.com', 'Zero')")
@@ -28,6 +29,11 @@ object SQL {
     stmt.execute("INSERT INTO USER(email, name) VALUES('two@gmail.com', 'Two')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('three@gmail.com', 'Three')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('four@gmail.com', 'Four')")
+
+
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 1', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 2', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 3', 'ahmetkucuk92@gmail.com')")
   }
 
 }

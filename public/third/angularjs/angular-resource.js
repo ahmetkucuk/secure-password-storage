@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.3.13
- * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.4.7
+ * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular, undefined) {'use strict';
@@ -10,7 +10,7 @@ var $resourceMinErr = angular.$$minErr('$resource');
 // Helper functions and regex to lookup a dotted path on an object
 // stopping at undefined/null.  The path must be composed of ASCII
 // identifiers (just like $parse)
-var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$][0-9a-zA-Z_$]*)+$/;
+var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
 
 function isValidDottedPath(path) {
   return (path != null && path !== '' && path !== 'hasOwnProperty' &&
@@ -22,7 +22,7 @@ function lookupDottedPath(obj, path) {
     throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
   }
   var keys = path.split('.');
-  for (var i = 0, ii = keys.length; i < ii && obj !== undefined; i++) {
+  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
     var key = keys[i];
     obj = (obj !== null) ? obj[key] : undefined;
   }
@@ -90,8 +90,8 @@ function shallowClearAndCopy(src, dst) {
      }]);
  * ```
  *
- * @param {string} url A parametrized URL template with parameters prefixed by `:` as in
- *   `/home/:username`. If you are using a URL with a port number (e.g.
+ * @param {string} url A parameterized URL template with parameters prefixed by `:` as in
+ *   `/user/:username`. If you are using a URL with a port number (e.g.
  *   `http://example.com:8080/api`), it will be respected.
  *
  *   If you are using a url with a suffix, just add the suffix, like this:
@@ -191,10 +191,10 @@ function shallowClearAndCopy(src, dst) {
  *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create,
  *   read, update, delete) on server-side data like this:
  *   ```js
- *   var User = $resource('/home/:userId', {userId:'@id'});
- *   var home = User.get({userId:123}, function() {
- *     home.abc = true;
- *     home.$save();
+ *   var User = $resource('/user/:userId', {userId:'@id'});
+ *   var user = User.get({userId:123}, function() {
+ *     user.abc = true;
+ *     user.$save();
  *   });
  *   ```
  *
@@ -213,7 +213,9 @@ function shallowClearAndCopy(src, dst) {
  *   - non-GET "class" actions: `Resource.action([parameters], postData, [success], [error])`
  *   - non-GET instance actions:  `instance.$action([parameters], [success], [error])`
  *
- *   Success callback is called with (value, responseHeaders) arguments. Error callback is called
+ *
+ *   Success callback is called with (value, responseHeaders) arguments, where the value is
+ *   the populated resource instance or collection object. The error callback is called
  *   with (httpResponse) argument.
  *
  *   Class actions return empty instance (with additional properties below).
@@ -245,14 +247,14 @@ function shallowClearAndCopy(src, dst) {
  *
  * ```js
      // Define CreditCard class
-     var CreditCard = $resource('/home/:userId/card/:cardId',
+     var CreditCard = $resource('/user/:userId/card/:cardId',
       {userId:123, cardId:'@id'}, {
        charge: {method:'POST', params:{charge:true}}
       });
 
      // We can retrieve a collection from the server
      var cards = CreditCard.query(function() {
-       // GET: /home/123/card
+       // GET: /user/123/card
        // server returns: [ {id:456, number:'1234', name:'Smith'} ];
 
        var card = cards[0];
@@ -261,19 +263,19 @@ function shallowClearAndCopy(src, dst) {
        card.name = "J. Smith";
        // non GET methods are mapped onto the instances
        card.$save();
-       // POST: /home/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
        // server returns: {id:456, number:'1234', name: 'J. Smith'};
 
        // our custom method is mapped as well.
        card.$charge({amount:9.99});
-       // POST: /home/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
+       // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
      });
 
      // we can create an instance as well
      var newCard = new CreditCard({number:'0123'});
      newCard.name = "Mike Smith";
      newCard.$save();
-     // POST: /home/123/card {number:'0123', name:'Mike Smith'}
+     // POST: /user/123/card {number:'0123', name:'Mike Smith'}
      // server returns: {id:789, number:'0123', name: 'Mike Smith'};
      expect(newCard.id).toEqual(789);
  * ```
@@ -288,10 +290,10 @@ function shallowClearAndCopy(src, dst) {
  * operations (create, read, update, delete) on server-side data.
 
    ```js
-     var User = $resource('/home/:userId', {userId:'@id'});
-     User.get({userId:123}, function(home) {
-       home.abc = true;
-       home.$save();
+     var User = $resource('/user/:userId', {userId:'@id'});
+     User.get({userId:123}, function(user) {
+       user.abc = true;
+       user.$save();
      });
    ```
  *
@@ -300,11 +302,11 @@ function shallowClearAndCopy(src, dst) {
  * could rewrite the above example and get access to http headers as:
  *
    ```js
-     var User = $resource('/home/:userId', {userId:'@id'});
+     var User = $resource('/user/:userId', {userId:'@id'});
      User.get({userId:123}, function(u, getResponseHeaders){
        u.abc = true;
        u.$save(function(u, putResponseHeaders) {
-         //u => saved home object
+         //u => saved user object
          //putResponseHeaders => $http header getter
        });
      });
@@ -313,10 +315,10 @@ function shallowClearAndCopy(src, dst) {
  * You can also access the raw `$http` promise via the `$promise` property on the object returned
  *
    ```
-     var User = $resource('/home/:userId', {userId:'@id'});
+     var User = $resource('/user/:userId', {userId:'@id'});
      User.get({userId:123})
-         .$promise.then(function(home) {
-           $scope.home = home;
+         .$promise.then(function(user) {
+           $scope.user = user;
          });
    ```
 
@@ -351,6 +353,7 @@ function shallowClearAndCopy(src, dst) {
  */
 angular.module('ngResource', ['ng']).
   provider('$resource', function() {
+    var PROTOCOL_AND_DOMAIN_REGEX = /^https?:\/\/[^\/]*/;
     var provider = this;
 
     this.defaults = {
@@ -425,7 +428,8 @@ angular.module('ngResource', ['ng']).
           var self = this,
             url = actionUrl || self.template,
             val,
-            encodedVal;
+            encodedVal,
+            protocolAndDomain = '';
 
           var urlParams = self.urlParams = {};
           forEach(url.split(/\W/), function(param) {
@@ -438,6 +442,10 @@ angular.module('ngResource', ['ng']).
             }
           });
           url = url.replace(/\\:/g, ':');
+          url = url.replace(PROTOCOL_AND_DOMAIN_REGEX, function(match) {
+            protocolAndDomain = match;
+            return '';
+          });
 
           params = params || {};
           forEach(self.urlParams, function(_, urlParam) {
@@ -468,7 +476,7 @@ angular.module('ngResource', ['ng']).
           // E.g. `http://url.com/id./format?q=x` becomes `http://url.com/id.format?q=x`
           url = url.replace(/\/\.(?=\w+($|\?))/, '.');
           // replace escaped `/\.` with `/.`
-          config.url = url.replace(/\/\\\./, '/.');
+          config.url = protocolAndDomain + url.replace(/\/\\\./, '/.');
 
 
           // set params - delegate param encoding to $http
@@ -585,8 +593,8 @@ angular.module('ngResource', ['ng']).
                 if (angular.isArray(data) !== (!!action.isArray)) {
                   throw $resourceMinErr('badcfg',
                       'Error in resource configuration for action `{0}`. Expected response to ' +
-                      'contain an {1} but got an {2}', name, action.isArray ? 'array' : 'object',
-                    angular.isArray(data) ? 'array' : 'object');
+                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
+                    angular.isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
                 }
                 // jshint +W018
                 if (action.isArray) {

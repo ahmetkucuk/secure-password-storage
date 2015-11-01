@@ -1,6 +1,7 @@
 package services
 
 import dao.DaoComponent
+import models.SecureText
 import third.webcore.dao.WebCoreDaoComponent
 import third.webcore.services.{UserServiceComponentImpl, UserServiceComponent}
 import utils.AddSecureTextRequest
@@ -16,6 +17,7 @@ trait ApiServiceComponent {
 
   trait ApiService {
     def addSecureText(addSecureTextRequest: AddSecureTextRequest, email: String): Future[Boolean]
+    def getSecureTexts(email: String): Future[List[SecureText]]
   }
 
 }
@@ -30,6 +32,9 @@ trait ApiServiceComponentImpl extends ApiServiceComponent {
 
     override def addSecureText(addTextRequest:AddSecureTextRequest, email: String): Future[Boolean] = {
       apiDao.addNewText(addTextRequest.text, email)
+    }
+    override def getSecureTexts(email: String): Future[List[SecureText]] = {
+      apiDao.listTextOf(email)
     }
   }
 
