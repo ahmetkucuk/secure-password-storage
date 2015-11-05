@@ -45,6 +45,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent {
 
       val list = apiDao.listTextOf(email)
       list.foreach(st => {
+        st.encryptWith(secret)
         Logger.debug(st.text)
         })
       list

@@ -21,13 +21,14 @@ class JavaCryptoEncryption(algorithmName: String) extends Encryption {
 
   def encryptBytes(bytes: Array[Byte], secret: String): Array[Byte] = {
     val secretKey = new SecretKeySpec(secret.getBytes("UTF-8"), algorithmName)
-    val encipher = Cipher.getInstance(algorithmName + "/ECB/PKCS7Padding")
+    val encipher = Cipher.getInstance(algorithmName + "/ECB/PKCS5Padding")
     encipher.init(Cipher.ENCRYPT_MODE, secretKey)
     encipher.doFinal(bytes)
   }
 
   def encrypt(theText: String, secret: String): String = {
     def encodeBase64(bytes: Array[Byte]) = Base64.encodeBase64String(bytes)
+    Logger.debug("key:" + Base64.encodeBase64String(secret.getBytes("UTF-8")))
     encodeBase64(encryptBytes(theText.getBytes("UTF-8"), secret))
 //    new String(encryptBytes(text.getBytes, secret))
   }
@@ -41,7 +42,7 @@ class JavaCryptoEncryption(algorithmName: String) extends Encryption {
 
   def decryptBytes(bytes: Array[Byte], secret: String): Array[Byte] = {
     val secretKey = new SecretKeySpec(secret.getBytes("UTF-8"), algorithmName)
-    val encipher = Cipher.getInstance(algorithmName + "/ECB/PKCS7Padding")
+    val encipher = Cipher.getInstance(algorithmName + "/ECB/PKCS5Padding")
     encipher.init(Cipher.DECRYPT_MODE, secretKey)
     encipher.doFinal(bytes)
   }

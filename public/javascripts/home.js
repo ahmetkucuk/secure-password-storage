@@ -128,7 +128,8 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
             $scope.texts = response.data.textList;
 
             console.log($scope.texts[0].text);
-            var decrypted = $crypto.decrypt($scope.texts[0].text);
+            var decrypted = $crypto.decrypt($scope.texts[1].text, "0123456789012345");
+            console.log($crypto.decrypt($scope.texts[2].text, "0123456789012345"));
             console.log("3: "+ decrypted);
 
         });

@@ -17,8 +17,11 @@ angular.module('mdo-angular-cryptography', [])
                     if (key === undefined) {
                         key = cryptoKey;
                     }
-
-                    return CryptoJS.AES.encrypt(message, key ).toString();
+                    var encryptedData = CryptoJS.AES.encrypt(message, key, {
+                        mode: CryptoJS.mode.ECB,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    return encryptedData;
                 },
 
                 decrypt: function(message, key) {
@@ -26,11 +29,13 @@ angular.module('mdo-angular-cryptography', [])
                     if (key === undefined) {
                         key = cryptoKey;
                     }
+                    var words = CryptoJS.enc.Utf8.parse(key); // WordArray object
+                    var base64Key = CryptoJS.enc.Base64.stringify(words);
 
                     //var wordArray = CryptoJS.enc.Utf8.parse(key);
                     //var base64Key = CryptoJS.enc.Base64.stringify(wordArray);
-                    //var key = CryptoJS.enc.Base64.parse(base64Key);
-                    var decryptedData = CryptoJS.AES.decrypt(CryptoJS.enc.Base64.parse(message), key, {
+                    key = CryptoJS.enc.Base64.parse(base64Key);
+                    var decryptedData = CryptoJS.AES.decrypt(message, key, {
                         mode: CryptoJS.mode.ECB,
                         padding: CryptoJS.pad.Pkcs7
                     });
