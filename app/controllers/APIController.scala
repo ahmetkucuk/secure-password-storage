@@ -61,7 +61,7 @@ class APIController extends Controller with DaoComponentImpl with ApiServiceComp
   }
 
   def sendSecret = Action.async {
-    Future.successful(Ok("secret"))
+    apiService.getEncryptedTexts("ahmetkucuk92@gmail.com").map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
   }
 
 }

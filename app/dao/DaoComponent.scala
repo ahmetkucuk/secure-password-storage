@@ -21,7 +21,7 @@ trait DaoComponent {
   trait ApiDao {
 
     def addNewText(text: String, email: String): Future[Boolean]
-    def listTextOf(email: String): Future[List[SecureText]]
+    def listTextOf(email: String): List[SecureText]
   }
 
 }
@@ -40,7 +40,7 @@ trait DaoComponentImpl extends DaoComponent {
       executeCommand(ds, query)
     }
 
-    def listTextOf(email: String): Future[List[SecureText]] = Future {
+    def listTextOf(email: String): List[SecureText] = {
       val query = String.format(Constants.TextQueries.SELECT_BY_EMAIL, email)
       executeQueryForList[SecureText](ds, query)
     }

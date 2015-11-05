@@ -1,39 +1,71 @@
-    var app = angular.module("app", ["ngResource", "ngRoute"])
-        .constant("apiUrl", "http://127.0.0.1:9000/api/")
-        .config(["$routeProvider", function($routeProvider) {
-            return $routeProvider.when("/", {
-                templateUrl: "/assets/html/home-list.html",
-                controller: "HomeCtrl"
-            }).when("/home", {
-                templateUrl: "/assets/html/home-list.html",
-                controller: "HomeCtrl"
-            }).when("/login", {
-                templateUrl: "/assets/html/login.html",
-                controller: "LoginCtrl"
-            }).when("/register", {
-                templateUrl: "/assets/html/register.html",
-                controller: "RegisterCtrl"
-            }).otherwise({
-                redirectTo: "/"
+var app = angular.module("app", ["ngResource", "ngRoute", "mdo-angular-cryptography", "ngProgress"])
+    .constant("apiUrl", "http://127.0.0.1:9000/api/")
+    .config(["$routeProvider", function($routeProvider) {
+        return $routeProvider.when("/", {
+            templateUrl: "/assets/html/home-list.html",
+            controller: "HomeCtrl"
+        }).when("/home", {
+            templateUrl: "/assets/html/home-list.html",
+            controller: "HomeCtrl"
+        }).when("/login", {
+            templateUrl: "/assets/html/login.html",
+            controller: "LoginCtrl"
+        }).when("/register", {
+            templateUrl: "/assets/html/register.html",
+            controller: "RegisterCtrl"
+        }).otherwise({
+            redirectTo: "/"
+        });
+    }
+    ]).config([
+        "$locationProvider", function($locationProvider) {
+            return $locationProvider.html5Mode({
+                enabled: true,
+                requireBase: false
+            }).hashPrefix("!"); // enable the new HTML5 routing and history API
+            // return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and history API
+        }
+    ]).config([
+        '$cryptoProvider', function($cryptoProvider){
+            $cryptoProvider.setCryptographyKey('0123456789012345');
+        }
+    ]);
+
+app.factory('loader', function() {
+    return {
+        executeGet: function(request, $scope, f) {
+            $scope.progressbar.start();
+            request.get(function(response) {
+                $scope.progressbar.complete();
+                f(response)
+            });
+        },
+        executePOST: function(request, data, $scope, f) {
+            $scope.progressbar.start();
+            request.save(data, function(response) {
+                $scope.progressbar.complete();
+                f(response)
             });
         }
-        ]).config([
-            "$locationProvider", function($locationProvider) {
-                return $locationProvider.html5Mode({
-                    enabled: true,
-                    requireBase: false
-                }).hashPrefix("!"); // enable the new HTML5 routing and history API
-                // return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and history API
-            }
-        ]);
+    };
+});
 
-    // the global controller
-app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
-
+app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", "$crypto", "loader", "ngProgressFactory", function($scope, $resource, $location, apiUrl, $crypto, loader, ngProgressFactory) {
+    //
+    //var encrypted = $crypto.encrypt('some plain text data');
+    //console.log("encrypted: " + encrypted);
+    //
+    //var decrypted = $crypto.decrypt(encrypted);
+    //console.log("dencrypted: " + decrypted);
 
     $scope.go = function (path) {
         $location.path(path);
     };
+
+    $scope.progressbar = ngProgressFactory.createInstance();
+    $scope.progressbar.setHeight('4px');
+    $scope.progressbar.setColor('#34B7E3');
+
     //
     //var PatientList = $resource(apiUrl + "/home/all"); // a RESTful-capable resource object
     //PatientList.get(function(response) {
@@ -80,17 +112,24 @@ app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", function
 }]);
 
 
-app.controller("HomeCtrl", ["$scope","$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
+    // the global controller
+app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loader", "$crypto", function($scope, $resource, $location, apiUrl, loader, $crypto) {
 
 
     console.log("in HomeController");
 
     $scope.shouldShowSecretInput = false;
 
+
+
     getTexts = function() {
         var SecureTextList = $resource(apiUrl + "user/secure/text/all"); // a RESTful-capable resource object
-        SecureTextList.get(function(response) {
+        loader.executeGet(SecureTextList, $scope, function(response) {
             $scope.texts = response.data.textList;
+
+            console.log($scope.texts[0].text);
+            var decrypted = $crypto.decrypt($scope.texts[0].text);
+            console.log("3: "+ decrypted);
 
         });
     };
@@ -98,8 +137,8 @@ app.controller("HomeCtrl", ["$scope","$resource", "$location", "apiUrl", functio
 
     $scope.addText = function() {
         console.log($scope.text);
-        var AddTextFromRequested = $resource(apiUrl + "user/secure/text")
-        AddTextFromRequested.save($scope.text, function (response) {
+        var AddTextRequest = $resource(apiUrl + "user/secure/text");
+        loader.executePOST(AddTextRequest, $scope.text, $scope, function (response) {
             console.log(response);
             getTexts();
         });
@@ -148,7 +187,7 @@ app.controller("LoginCtrl", ["$scope", "$resource", "$location", "apiUrl", funct
         loginCtrl.save($scope.credentials, function(response) {
             console.log(response);
             if(response.result.status_code == 1) {
-                window.location = "/home";
+                window.location = "/";
             }
         });
     };

@@ -40,7 +40,7 @@ with SessionServiceComponentImpl with AuthenticationHelper {
       }
   }
 
-  def index = Action.async {
+  def index = Authenticated {
       userService.getUsers().map{users =>
         Ok(ResponseListUser(ResponseBase.success(), users).toJson)
       }

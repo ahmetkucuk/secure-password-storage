@@ -3,6 +3,8 @@ package models
 import java.sql.ResultSet
 
 import dao.SqlMappable
+import org.apache.commons.codec.binary.Base64
+import play.api.Logger
 import play.api.libs.json.{Json, JsObject, JsValue}
 import third.webcore.models.{RegisterRequest, SessionStatus}
 import utils.AddSecureTextRequest
@@ -10,7 +12,7 @@ import utils.AddSecureTextRequest
 /**
  * Created by ahmetkucuk on 30/10/15.
  */
-case class SecureText(id: Int, text: String, email: String) {
+case class SecureText(id: Int, var text: String, email: String) {
   //pass_id INT NOT NULL AUTO_INCREMENT, text VARCHAR, u_email INT, FOREIGN KEY (u_email) REFERENCES USER(email))")
 
   def this(request: AddSecureTextRequest, email: String) = this(-1, request.text, email)
@@ -20,6 +22,10 @@ case class SecureText(id: Int, text: String, email: String) {
       "email" -> Json.toJson(email),
       "text" -> Json.toJson(text)
     ))
+  }
+
+  def encryptWith(secret: String): Unit = {
+    text = crypto.AES.encrypt(text, secret)
   }
 }
 object SecureText {
