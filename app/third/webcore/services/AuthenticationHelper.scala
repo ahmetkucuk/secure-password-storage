@@ -5,6 +5,7 @@ import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.JsObject
 import play.api.mvc._
+import third.webcore.models.ResponseBase
 import utils.Constants
 
 import scala.concurrent.Future
@@ -27,8 +28,8 @@ trait AuthenticationHelper {
       case (Some(email), Some(sessionId)) =>
         Logger.debug(s"[UserController-Authenticate] In Authentication email: $email sessionId: $sessionId")
         sessionService.checkValidityAndUpdateIfValid(email, sessionId).flatMap { sessionResult =>
-
           if(sessionResult) {
+//          if(true) {
 
               //This section is written for admin authentication controller
               //Currently we don't need to use this
@@ -48,11 +49,11 @@ trait AuthenticationHelper {
 
             f(request, email, sessionId)
           } else {
-            Future.successful(Redirect(routes.ApplicationController.error()))
+            Future.successful(Ok(ResponseBase.sessionError().toJson))
           }
         }
       case _ =>
-        Future.successful(Redirect(routes.ApplicationController.error()))
+        Future.successful(Ok(ResponseBase.sessionError().toJson))
     }
 
   }

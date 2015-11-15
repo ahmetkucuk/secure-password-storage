@@ -45,6 +45,7 @@ trait UserServiceComponentImpl extends UserServiceComponent {
     def register(registerRequest: RegisterRequest): Future[InternalResponse] = {
 
       val passwordHash = Crypto.sign(registerRequest.email + registerRequest.password)
+      Logger.debug(s"[UserServiceComponent-register]: PasswordHash: " + passwordHash)
       if(!checkPasswordStrength(registerRequest.password)) {
         Logger.debug(s"[UserServiceComponent-register]: Password is not strong. Password: " + registerRequest.password)
         Future.successful(InternalResponse(false, Messages.get("password_not_strong")))

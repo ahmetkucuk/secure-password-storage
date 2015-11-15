@@ -1,7 +1,7 @@
 package utils
 
 import models.SecureText
-import play.api.libs.json.{JsArray, JsObject}
+import play.api.libs.json.{Json, JsArray, JsObject}
 import third.webcore.models._
 
 /**
@@ -9,7 +9,14 @@ import third.webcore.models._
  */
 case class ResponseListText(result: ResponseBase, data:List[SecureText]) {
   def toJson: JsObject = {
-    JsObject(Seq(WebCoreConstants.RESULT -> result.toJson, WebCoreConstants.DATA -> JsObject(Seq("textList" -> JsArray(data.map( text => text.toJson))))))
+    result.toJson.as[JsObject] ++ JsObject(Seq(WebCoreConstants.DATA -> JsObject(Seq("textList" -> JsArray(data.map( text => text.toJson))))))
   }
 }
 object ResponseListText
+
+case class ResponseListTextWithSecret(result: ResponseBase, data:List[SecureText], secret: String) {
+  def toJson: JsObject = {
+    JsObject(Seq("secret" -> Json.toJson(secret))) ++ result.toJson.as[JsObject] ++ JsObject(Seq(WebCoreConstants.DATA -> JsObject(Seq("textList" -> JsArray(data.map( text => text.toJson))))))
+  }
+}
+object ResponseListTextWithSecret

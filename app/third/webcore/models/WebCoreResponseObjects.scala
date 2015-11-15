@@ -15,7 +15,7 @@ class WebCoreResponseObjects {
 
 case class ResponseListUser(result: ResponseBase, data:List[User]) {
   def toJson: JsObject = {
-    JsObject(Seq(WebCoreConstants.RESULT -> result.toJson, WebCoreConstants.DATA -> JsObject(Seq("userList" -> JsArray(data.map( user => user.toJson))))))
+    result.toJson.as[JsObject] ++ JsObject(Seq(WebCoreConstants.DATA -> JsObject(Seq("userList" -> JsArray(data.map( user => user.toJson))))))
   }
 }
 object ResponseListUser
@@ -23,7 +23,7 @@ object ResponseListUser
 
 case class ResponseUser(result: ResponseBase, data:User) {
   def toJson: JsObject = {
-    JsObject(Seq(WebCoreConstants.RESULT -> result.toJson, WebCoreConstants.DATA -> data.toJson))
+    result.toJson.as[JsObject] ++ JsObject(Seq(WebCoreConstants.DATA -> data.toJson))
   }
 }
 object ResponseUser
@@ -71,6 +71,10 @@ object ResponseBase {
 
   def error(): ResponseBase = {
     ResponseBase(WebCoreConstants.ERROR, WebCoreConstants.GENERAL_ERROR_CODE, "error")
+  }
+
+  def sessionError(): ResponseBase = {
+    ResponseBase(WebCoreConstants.ERROR, WebCoreConstants.SESSION_ERROR_CODE, "Session Error")
   }
 
   def response(result:Boolean): JsValue = {

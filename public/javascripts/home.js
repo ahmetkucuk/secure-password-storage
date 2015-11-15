@@ -32,19 +32,50 @@ var app = angular.module("app", ["ngResource", "ngRoute", "mdo-angular-cryptogra
     ]);
 
 app.factory('loader', function() {
+
+    var SUCCESS_CODE= 1
+    var DATABASE_ERROR_CODE = 2
+    var INTERNAL_SERVER_ERROR_CODE = 3
+    var SESSION_ERROR_CODE = 4
+    var GENERAL_ERROR_CODE = 5
+
+    function checkIfThereIsError($scope, responseData) {
+        console.log(responseData);
+        var status = responseData.status_code;
+
+        $scope.showStatusMessage = true;
+        setTimeout(function() {
+            $scope.showStatusMessage = false;
+        }, 3000);
+
+        if(status == SESSION_ERROR_CODE) {
+            $scope.go("/login");
+            return false;
+        } else if(status != SUCCESS_CODE) {
+            $scope.statusMessage = responseData.status;
+            return false;
+        }
+        return true;
+    };
+
     return {
-        executeGet: function(request, $scope, f) {
+        executeGet: function($scope, request, f) {
             $scope.progressbar.start();
             request.get(function(response) {
                 $scope.progressbar.complete();
-                f(response)
+                if(checkIfThereIsError($scope, response)) {
+                    f(response)
+                }
+
             });
         },
-        executePOST: function(request, data, $scope, f) {
+        executePOST: function($scope, request, data, f) {
             $scope.progressbar.start();
             request.save(data, function(response) {
                 $scope.progressbar.complete();
-                f(response)
+                if(checkIfThereIsError($scope, response)) {
+                    f(response)
+                }
             });
         }
     };
@@ -57,6 +88,7 @@ app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", "$crypto
     //
     //var decrypted = $crypto.decrypt(encrypted);
     //console.log("dencrypted: " + decrypted);
+    $scope.showStatusMessage = false;
 
     $scope.go = function (path) {
         $location.path(path);
@@ -66,49 +98,6 @@ app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", "$crypto
     $scope.progressbar.setHeight('4px');
     $scope.progressbar.setColor('#34B7E3');
 
-    //
-    //var PatientList = $resource(apiUrl + "/home/all"); // a RESTful-capable resource object
-    //PatientList.get(function(response) {
-    //    $scope.patients = response.data.patientList;
-    //
-    //});
-    //
-    //var BeaconList = $resource(apiUrl + "/beacon/all"); // a RESTful-capable resource object
-    //BeaconList.get(function(response) {
-    //    console.log(response);
-    //    $scope.beacons = response.data.beaconList;
-    //
-    //});
-    //
-    //var BedList = $resource(apiUrl + "/bed/all"); // a RESTful-capable resource object
-    //BedList.get(function(response) {
-    //    console.log(response);
-    //    $scope.beds = response.data.bedList;
-    //
-    //});
-    //
-    //var EquipmentList = $resource(apiUrl + "/equipment/all"); // a RESTful-capable resource object
-    //EquipmentList.get(function(response) {
-    //    console.log(response);
-    //    $scope.equipments = response.data.equipmentList;
-    //
-    //});
-    //
-    //
-    //$scope.onClickDetail = function(detailUrl) {
-    //    window.location = detailUrl;
-    //};
-    //
-    //$scope.isActive = function(viewLocation) {
-    //
-    //    var active = false;
-    //
-    //    if(viewLocation === $location.path()){
-    //        active = true;
-    //    }
-    //
-    //    return active;
-    //};
 }]);
 
 
@@ -124,13 +113,19 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
 
     getTexts = function() {
         var SecureTextList = $resource(apiUrl + "user/secure/text/all"); // a RESTful-capable resource object
-        loader.executeGet(SecureTextList, $scope, function(response) {
-            $scope.texts = response.data.textList;
+        loader.executeGet($scope, SecureTextList, function(response) {
+            $scope.texts = [];
+            var i = 0;
+            response.data.textList.forEach(function(textObj) {
+                $scope.texts[i] = textObj.text;
+                i = i+1;
+            });
 
-            console.log($scope.texts[0].text);
-            var decrypted = $crypto.decrypt($scope.texts[1].text, "0123456789012345");
-            console.log($crypto.decrypt($scope.texts[2].text, "0123456789012345"));
-            console.log("3: "+ decrypted);
+
+            //console.log($scope.texts[0].text);
+            //var decrypted = $crypto.decrypt($scope.texts[1].text, "0123456789012345");
+            //console.log($crypto.decrypt($scope.texts[2].text, "0123456789012345"));
+            //console.log("3: "+ decrypted);
 
         });
     };
@@ -139,7 +134,7 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
     $scope.addText = function() {
         console.log($scope.text);
         var AddTextRequest = $resource(apiUrl + "user/secure/text");
-        loader.executePOST(AddTextRequest, $scope.text, $scope, function (response) {
+        loader.executePOST($scope, AddTextRequest, $scope.text, function (response) {
             console.log(response);
             getTexts();
         });
@@ -148,19 +143,35 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
     $scope.decryptTexts = function() {
         $scope.shouldShowSecretInput = true;
         console.log($scope.text);
-        var SendSecret = $resource(apiUrl + "user/send/secret")
-        SendSecret.get(function(response) {
-            $scope.statusMessage = "secret is sended"
+        var SendSecret = $resource(apiUrl + "user/send/secret");
+        loader.executeGet($scope, SendSecret, function(response) {
+
+            $scope.latestEncryptedData = response.data.textList;
+            $scope.latestRESTSecret = response.secret;
+            //var i = 0;
+            //$scope.texts = [];
+            //response.data.textList.forEach(function(textObj) {
+            //    $scope.texts[i] = $crypto.decrypt(textObj.text, response.secret);
+            //    console.log($scope.texts[i] + " " + response.secret + " " + textObj.text);
+            //    i = i+1;
+            //});
 
         });
-    }
+    };
 
     $scope.useThisSecret = function() {
-        $scope.statusMessage = ""
+        console.log("use this secret: " + $scope.secret.value);
+        var i = 0;
+        $scope.texts = [];
+        $scope.latestEncryptedData.forEach(function(textObj) {
+            $scope.texts[i] = $crypto.decrypt(textObj.text, $scope.secret.value);
+            i = i+1;
+        });
+        $scope.shouldShowSecretInput = false;
     };
 }]);
 
-app.controller("RegisterCtrl", ["$scope", "$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
+app.controller("RegisterCtrl", ["$scope", "$resource", "$location", "apiUrl","loader", function($scope, $resource, $location, apiUrl, loader) {
     // to save a celebrity
 
     //function checkPassword(str) { // at least one number, one lowercase and one uppercase letter // at least six characters
@@ -171,8 +182,9 @@ app.controller("RegisterCtrl", ["$scope", "$resource", "$location", "apiUrl", fu
     $scope.register = function() {
         var RegisterRequest = $resource(apiUrl + "user/register"); // a RESTful-capable resource object
         console.log($scope.user);
-        RegisterRequest.save($scope.user, function(response) {
-            if(response.result.status_code == 1) {
+
+        loader.executePOST($scope, RegisterRequest, $scope.user, function(response) {
+            if(response.status_code == 1) {
                 window.location = "/login";
             }
         }); // $scope.celebrity comes from the detailForm in public/html/detail.html
@@ -180,14 +192,14 @@ app.controller("RegisterCtrl", ["$scope", "$resource", "$location", "apiUrl", fu
     };
 }]);
 
-app.controller("LoginCtrl", ["$scope", "$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
+app.controller("LoginCtrl", ["$scope", "$resource", "$location", "apiUrl","loader", function($scope, $resource, $location, apiUrl, loader) {
     // to save a celebrity
     $scope.login = function() {
         console.log($scope.credentials);
-        var loginCtrl = $resource(apiUrl + "user/login"); // a RESTful-capable resource object
-        loginCtrl.save($scope.credentials, function(response) {
+        var LoginRequest = $resource(apiUrl + "user/login"); // a RESTful-capable resource object
+        loader.executePOST($scope, LoginRequest, $scope.credentials, function(response) {
             console.log(response);
-            if(response.result.status_code == 1) {
+            if(response.status_code == 1) {
                 window.location = "/";
             }
         });

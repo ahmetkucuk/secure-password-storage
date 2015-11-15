@@ -53,11 +53,11 @@ with SessionServiceComponentImpl with AuthenticationHelper {
           userService.login(loginRequest.email, loginRequest.password).map{
             case Some((sessionId, user)) =>
               Logger.info("Login Success With email: " + loginRequest.email + " password: " + loginRequest.password)
-              if(user.role.equalsIgnoreCase(WebCoreConstants.ROLE_ADMIN)) {
-                Ok(ResponseUser(ResponseBase.success(), user).toJson).withSession(WebCoreConstants.SESSION_ID -> sessionId, WebCoreConstants.EMAIL -> user.email, WebCoreConstants.ROLE -> WebCoreConstants.ROLE_ADMIN)
-              } else {
+//              if(user.role.equalsIgnoreCase(WebCoreConstants.ROLE_ADMIN)) {
+//                Ok(ResponseUser(ResponseBase.success(), user).toJson).withSession(WebCoreConstants.SESSION_ID -> sessionId, WebCoreConstants.EMAIL -> user.email, WebCoreConstants.ROLE -> WebCoreConstants.ROLE_ADMIN)
+//              } else {
                 Ok(ResponseUser(ResponseBase.success(), user).toJson).withSession(WebCoreConstants.SESSION_ID -> sessionId, WebCoreConstants.EMAIL -> user.email, WebCoreConstants.ROLE -> WebCoreConstants.ROLE_USER)
-              }
+//              }
             case None =>
               Logger.info("Login Fail with email: " + loginRequest.email + " password: " + loginRequest.password)
               Ok(ResponseBase.error().toResultJson)

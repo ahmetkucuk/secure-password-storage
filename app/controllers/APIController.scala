@@ -12,7 +12,7 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import services.{ApiServiceComponentImpl, ApiServiceComponent}
 import third.webcore.services.{SessionServiceComponentImpl, AuthenticationHelper, UserServiceComponentImpl}
-import utils.{ResponseListText, AddSecureTextRequest}
+import utils.{ResponseListTextWithSecret, ResponseListText, AddSecureTextRequest}
 import views.html
 import org.apache.commons.codec.binary.Base64
 
@@ -56,12 +56,12 @@ class APIController extends Controller with DaoComponentImpl with ApiServiceComp
 //    apiService.getSecureTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
 //  }
 
-  def getSecureTexts = Action.async {
-    apiService.getEncryptedTexts("ahmetkucuk92@gmail.com").map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
+  def getSecureTexts = Authenticated { (request, email, _) =>
+    apiService.getEncryptedTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts._2).toJson))
   }
 
-  def sendSecret = Action.async {
-    apiService.getEncryptedTexts("ahmetkucuk92@gmail.com").map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
+  def sendSecret = Authenticated { (request, email, _) =>
+    apiService.getEncryptedTexts(email).map(texts => Ok(ResponseListTextWithSecret(ResponseBase.success(), texts._2, texts._1).toJson))
   }
 
 }

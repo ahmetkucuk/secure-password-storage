@@ -24,7 +24,7 @@ object SQL {
     stmt.execute("DROP TABLE IF EXISTS TEXT;CREATE TABLE TEXT(pass_id INT NOT NULL AUTO_INCREMENT, text VARCHAR, email VARCHAR, FOREIGN KEY (email) REFERENCES USER(email))")
     stmt.execute("DROP TABLE IF EXISTS SESSION;CREATE TABLE SESSION(email VARCHAR, session_id VARCHAR, valid_until LONG)")
 
-    stmt.execute("INSERT INTO USER(email, name) VALUES('ahmetkucuk92@gmail.com', 'Zero')")
+    stmt.execute("INSERT INTO USER(email, name, password) VALUES('ahmetkucuk92@gmail.com', 'Ahmet', '2d42f7c204976b136cb6ac5d505e9b24f5671f2e')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('one@gmail.com', 'One')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('two@gmail.com', 'Two')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('three@gmail.com', 'Three')")

@@ -1,4 +1,7 @@
 <div class="registeration_view row">
+    <div data-ng-show="showStatusMessage">
+        <label class="label label-warning">{{statusMessage}}</label>
+    </div>
     <div class="col-md-4 col-md-offset-4">
         <form name="userRegisterForm" role="form" class="form-horizontal">
             <fieldset>

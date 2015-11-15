@@ -21,7 +21,7 @@ trait ApiServiceComponent {
   trait ApiService {
     def addSecureText(addSecureTextRequest: AddSecureTextRequest, email: String): Future[Boolean]
     def getSecureTexts(email: String): Future[List[SecureText]]
-    def getEncryptedTexts(email: String): Future[List[SecureText]]
+    def getEncryptedTexts(email: String): Future[(String, List[SecureText])]
   }
 
 }
@@ -40,7 +40,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent {
     override def getSecureTexts(email: String): Future[List[SecureText]] = Future {
       apiDao.listTextOf(email)
     }
-    override def getEncryptedTexts(email: String): Future[List[SecureText]] = Future {
+    override def getEncryptedTexts(email: String): Future[(String, List[SecureText])] = Future {
       val secret = "0123456789012345";
 
       val list = apiDao.listTextOf(email)
@@ -48,7 +48,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent {
         st.encryptWith(secret)
         Logger.debug(st.text)
         })
-      list
+      ("0123456789012345", list)
     }
   }
 

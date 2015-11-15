@@ -1,51 +1,67 @@
 <div class="dynamic_container">
-    {{statusMessage}}
-    <div class="row top15">
-        <form name="decryptTextForm" role="form" class="form-horizontal">
-            <fieldset>
-                <div class="col-xs-3">
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <button data-ng-click="decryptTexts()" class="btn btn-success" type="button">Decrypt All Texts</button>
-                        </span>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-    <div class="row top15" data-ng-show="shouldShowSecretInput">
-        <form name="useSecretForm" role="form" class="form-horizontal">
-            <fieldset>
-                <div class="col-xs-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="secret" name="secret" data-ng-model="secret.value" placeholder="enter secret" required>
-                        <span class="input-group-btn">
-                            <button data-ng-click="useThisSecret()" data-ng-disabled="useSecretForm.$invalid" class="btn btn-success" type="button">Use this secret</button>
-                        </span>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+    <div data-ng-show="showStatusMessage">
+        <label class="label label-warning">{{statusMessage}}</label>
     </div>
     <div class="row top15">
-        <form name="addTextForm" role="form" class="form-horizontal">
-            <fieldset>
-                <div class="col-xs-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="text" name="text" data-ng-model="text.text" placeholder="text to secure" required>
-                        <span class="input-group-btn">
-                            <button data-ng-click="addText()" data-ng-disabled="addTextForm.$invalid" class="btn btn-success" type="button">Add New Text</button>
-                        </span>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+        <div class="col-md-8">
+            <div class="row top15">
+                <form name="addTextForm" role="form" class="form-horizontal">
+                    <fieldset>
+                        <div class="col-xs-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="text" name="text" data-ng-model="text.text" placeholder="text to secure" required>
+                                <span class="input-group-btn">
+                                    <button data-ng-click="addText()" data-ng-disabled="addTextForm.$invalid" class="btn btn-success" type="button">Add New Text</button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row top15">
+                <form name="decryptTextForm" role="form" class="form-horizontal">
+                    <fieldset>
+                        <div class="col-xs-8">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button data-ng-click="decryptTexts()" class="btn btn-success" type="button">Decrypt All Texts</button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="row top15" data-ng-show="shouldShowSecretInput">
+                <form name="useSecretForm" role="form" class="form-horizontal">
+                    <fieldset>
+                        <div class="col-xs-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="secret" name="secret" data-ng-model="secret.value" placeholder="enter secret" required>
+                                <span class="input-group-btn">
+                                    <button data-ng-click="useThisSecret()" data-ng-disabled="useSecretForm.$invalid" class="btn btn-success" type="button">Use this secret</button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
     </div>
     <div class="row top15">
         <div class="col-md-4">
-            <div class="row top15" ng-repeat="text in texts">
-                {{text.text}}
-            </div>
+            <table class="table">
+                <tr>
+                    <th>index</th>
+                    <th>text</th>
+                </tr>
+                <tr ng-repeat="(index, text) in texts">
+                    <td>{{index}}</td>
+                    <td>{{text}}</td>
+                </tr>
+
+            </table>
         </div>
     </div>
     <h1>{{testText}}</h1>
