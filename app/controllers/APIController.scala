@@ -57,7 +57,7 @@ class APIController extends Controller with DaoComponentImpl with ApiServiceComp
 //  }
 
   def getSecureTexts = Authenticated { (request, email, _) =>
-    apiService.getEncryptedTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts._2).toJson))
+    apiService.getSecureTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
   }
 
   def sendSecret = Authenticated { (request, email, _) =>

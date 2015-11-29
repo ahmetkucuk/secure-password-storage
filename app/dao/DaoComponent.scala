@@ -34,15 +34,16 @@ trait DaoComponentImpl extends DaoComponent {
 
     val ds = SQL.ds
 
-
     def addNewText(text: String, email: String): Future[Boolean] = Future {
-      val query = String.format(Constants.TextQueries.INSERT, text, email)
+      val query = String.format(Constants.TextQueries.INSERT, crypto.AES.encrypt(text, Constants.APPLICATION_SECRET), email)
       executeCommand(ds, query)
     }
 
     def listTextOf(email: String): List[SecureText] = {
       val query = String.format(Constants.TextQueries.SELECT_BY_EMAIL, email)
-      executeQueryForList[SecureText](ds, query)
+      val list = executeQueryForList[SecureText](ds, query)
+      list.foreach(st => st.decryptWith(Constants.APPLICATION_SECRET))
+      list
     }
 
   }

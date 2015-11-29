@@ -18,6 +18,7 @@ GET            /api/user/send/secret                         controllers.APICont
 GET           /api/users                      third.webcore.controllers.UserController.index
 POST          /api/user/renewPass             third.webcore.controllers.UserController.renewPassword
 POST          /api/user/login                 third.webcore.controllers.UserController.login
+GET           /api/user/logout                 third.webcore.controllers.UserController.logout
 POST          /api/user/register              third.webcore.controllers.UserController.register
 GET           /api/user/detail                third.webcore.controllers.UserController.getUser
 GET           /api/user/:id                   third.webcore.controllers.UserController.get(id: String)

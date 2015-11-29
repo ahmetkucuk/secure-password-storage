@@ -27,6 +27,10 @@ case class SecureText(id: Int, var text: String, email: String) {
   def encryptWith(secret: String): Unit = {
     text = crypto.AES.encrypt(text, secret)
   }
+
+  def decryptWith(secret: String): Unit = {
+    text = crypto.AES.decrypt(text, secret)
+  }
 }
 object SecureText {
   implicit val map = new SqlMappable[SecureText] {

@@ -24,16 +24,16 @@ object SQL {
     stmt.execute("DROP TABLE IF EXISTS TEXT;CREATE TABLE TEXT(pass_id INT NOT NULL AUTO_INCREMENT, text VARCHAR, email VARCHAR, FOREIGN KEY (email) REFERENCES USER(email))")
     stmt.execute("DROP TABLE IF EXISTS SESSION;CREATE TABLE SESSION(email VARCHAR, session_id VARCHAR, valid_until LONG)")
 
-    stmt.execute("INSERT INTO USER(email, name, password) VALUES('ahmetkucuk92@gmail.com', 'Ahmet', '2d42f7c204976b136cb6ac5d505e9b24f5671f2e')")
+    stmt.execute("INSERT INTO USER(email, name, phone, password) VALUES('ahmetkucuk92@gmail.com', 'Ahmet', '4702636739', '2d42f7c204976b136cb6ac5d505e9b24f5671f2e')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('one@gmail.com', 'One')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('two@gmail.com', 'Two')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('three@gmail.com', 'Three')")
     stmt.execute("INSERT INTO USER(email, name) VALUES('four@gmail.com', 'Four')")
 
 
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 1', 'ahmetkucuk92@gmail.com')")
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 2', 'ahmetkucuk92@gmail.com')")
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('encrypted 3', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 1", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 2", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 3", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
   }
 
 }

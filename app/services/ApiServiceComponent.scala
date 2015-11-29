@@ -3,11 +3,12 @@ package services
 import dao.DaoComponent
 import models.SecureText
 import play.api.Logger
+import play.api.libs.ws.WS
 import third.webcore.dao.WebCoreDaoComponent
 import third.webcore.services.{UserServiceComponentImpl, UserServiceComponent}
-import utils.AddSecureTextRequest
+import utils.{RandomKeyGenerator, AddSecureTextRequest}
 import scala.concurrent.{Await, Future}
-import third.webcore.models.User
+import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -26,11 +27,13 @@ trait ApiServiceComponent {
 
 }
 
-trait ApiServiceComponentImpl extends ApiServiceComponent {
+trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerator {
 
   this: DaoComponent with WebCoreDaoComponent =>
 
   val apiService = new ApiServiceImpl
+
+  val textMagicUrl: String = "https://www.textmagic.com/app/api?username=ahmetkucuk&password=t3RPUWKoXr&cmd=send&text=%s&phone=1%s&unicode=0";
 
   class ApiServiceImpl extends ApiService {
 
@@ -38,17 +41,33 @@ trait ApiServiceComponentImpl extends ApiServiceComponent {
       apiDao.addNewText(addTextRequest.text, email)
     }
     override def getSecureTexts(email: String): Future[List[SecureText]] = Future {
-      apiDao.listTextOf(email)
+      val secret = randomAlphanumericString(16);
+      val list = apiDao.listTextOf(email);
+      list.foreach(st => { st.encryptWith(secret) })
+      list
     }
     override def getEncryptedTexts(email: String): Future[(String, List[SecureText])] = Future {
-      val secret = "0123456789012345";
+      val secret = randomAlphanumericString(16);
+      val (secretPart1, secretPart2) = secret.splitAt(8);
+
+      userDao.getUserByEmail(email).map({
+          case Some(user) =>
+            sendSecret(user.phone, secretPart2);
+          case _ =>
+            Logger.debug("Could not find user: " + email);
+        }
+      )
 
       val list = apiDao.listTextOf(email)
-      list.foreach(st => {
-        st.encryptWith(secret)
-        Logger.debug(st.text)
-        })
-      ("0123456789012345", list)
+      list.foreach(st => { st.encryptWith(secret) })
+      (secretPart1, list)
+    }
+
+    def sendSecret(number:String, secret: String): Unit = {
+
+      val url: String = String.format(textMagicUrl, secret, number)
+      Logger.debug(url)
+//      WS.url(url).get().map { response => Logger.debug("SMS is sended to " + number + " secret was " + secret + " response: " + response.body);}
     }
   }
 

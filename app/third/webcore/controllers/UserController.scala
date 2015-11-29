@@ -98,6 +98,10 @@ with SessionServiceComponentImpl with AuthenticationHelper {
       )
   }
 
+  def logout() = Authenticated { (request, email, _) =>
+    Future.successful(Ok(ResponseBase.success().toJson).withNewSession)
+  }
+
   def changePassword() = Authenticated(parse.json) { (request, _, _) =>
 
       request.body.validate[ChangePasswordRequest].fold(

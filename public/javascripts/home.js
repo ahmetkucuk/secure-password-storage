@@ -49,9 +49,11 @@ app.factory('loader', function() {
         }, 3000);
 
         if(status == SESSION_ERROR_CODE) {
+            console.log("Session Error");
             $scope.go("/login");
             return false;
         } else if(status != SUCCESS_CODE) {
+            console.log("Other error: " + responseData.status);
             $scope.statusMessage = responseData.status;
             return false;
         }
@@ -94,6 +96,13 @@ app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", "$crypto
         $location.path(path);
     };
 
+    $scope.logout = function () {
+        var LogoutRequest = $resource(apiUrl + "user/logout");
+        loader.executeGet($scope, LogoutRequest, function(response) {
+            window.location = "/login";
+        });
+    };
+
     $scope.progressbar = ngProgressFactory.createInstance();
     $scope.progressbar.setHeight('4px');
     $scope.progressbar.setColor('#34B7E3');
@@ -103,9 +112,6 @@ app.controller("AppCtrl", ["$scope","$resource", "$location", "apiUrl", "$crypto
 
     // the global controller
 app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loader", "$crypto", function($scope, $resource, $location, apiUrl, loader, $crypto) {
-
-
-    console.log("in HomeController");
 
     $scope.shouldShowSecretInput = false;
 
@@ -135,7 +141,6 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
         console.log($scope.text);
         var AddTextRequest = $resource(apiUrl + "user/secure/text");
         loader.executePOST($scope, AddTextRequest, $scope.text, function (response) {
-            console.log(response);
             getTexts();
         });
     };
@@ -148,26 +153,24 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
 
             $scope.latestEncryptedData = response.data.textList;
             $scope.latestRESTSecret = response.secret;
-            //var i = 0;
-            //$scope.texts = [];
-            //response.data.textList.forEach(function(textObj) {
-            //    $scope.texts[i] = $crypto.decrypt(textObj.text, response.secret);
-            //    console.log($scope.texts[i] + " " + response.secret + " " + textObj.text);
-            //    i = i+1;
-            //});
-
         });
     };
 
     $scope.useThisSecret = function() {
-        console.log("use this secret: " + $scope.secret.value);
+        console.log("concatenate REST secret: " + $scope.latestRESTSecret + " with SMS secret: " + $scope.secret.value);
         var i = 0;
         $scope.texts = [];
+        var secret = $scope.latestRESTSecret + $scope.secret.value;
         $scope.latestEncryptedData.forEach(function(textObj) {
-            $scope.texts[i] = $crypto.decrypt(textObj.text, $scope.secret.value);
+            $scope.texts[i] = $crypto.decrypt(textObj.text, secret);
             i = i+1;
         });
         $scope.shouldShowSecretInput = false;
+
+        setTimeout(function() {
+            $scope.texts = null;
+            window.location.reload(true);
+        }, 30000);
     };
 }]);
 
@@ -198,33 +201,9 @@ app.controller("LoginCtrl", ["$scope", "$resource", "$location", "apiUrl","loade
         console.log($scope.credentials);
         var LoginRequest = $resource(apiUrl + "user/login"); // a RESTful-capable resource object
         loader.executePOST($scope, LoginRequest, $scope.credentials, function(response) {
-            console.log(response);
             if(response.status_code == 1) {
                 window.location = "/";
             }
         });
     };
-}]);
-
-
-app.controller("patientController", ["$scope","$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
-
-       $scope.addPatient = function() {
-            console.log($scope.patient)
-            var CreatePatientFromRequested = $resource(apiUrl + "/home/add")
-            CreatePatientFromRequested.save($scope.patient, function(response) {
-                //if($rootScope.checkError(response))
-        });
-    }
-}]);
-
-app.controller("beaconPatientLinkerController", ["$scope","$resource", "$location", "apiUrl", function($scope, $resource, $location, apiUrl) {
-
-
-   $scope.linkBeaconWithPatient = function() {
-        var CreateLinkFromRequested = $resource(apiUrl + "/beacon/set/bed")
-        CreateLinkFromRequested.save($scope.linker, function(response) {
-            //if($rootScope.checkError(response))
-         });
-    }
 }]);
