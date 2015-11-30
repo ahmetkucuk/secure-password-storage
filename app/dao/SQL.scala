@@ -31,9 +31,9 @@ object SQL {
     stmt.execute("INSERT INTO USER(email, name) VALUES('four@gmail.com', 'Four')")
 
 
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 1", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 2", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
-    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("encrypted 3", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("Google Ahmet123", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("Facebook 123Ahmet", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
+    stmt.execute("INSERT INTO TEXT(text, email) VALUES('" + crypto.AES.encrypt("Twitter RandomNumber123", Constants.APPLICATION_SECRET) + "', 'ahmetkucuk92@gmail.com')")
   }
 
 }

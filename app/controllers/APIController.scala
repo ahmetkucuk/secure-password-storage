@@ -22,7 +22,7 @@ import scala.util.{Failure, Success}
 class APIController extends Controller with DaoComponentImpl with ApiServiceComponentImpl with WebCoreDaoComponentImpl with SessionServiceComponentImpl with AuthenticationHelper{
 
 //  def addSecureText = Authenticated(parse.json) { (request, email, _) =>
-  def addSecureText = Action.async(parse.json) { request =>
+  def addSecureText = Authenticated(parse.json) { (request, email, _) =>
 
 //    Logger.debug("email: " + email)
 //
@@ -36,7 +36,7 @@ class APIController extends Controller with DaoComponentImpl with ApiServiceComp
 
     request.body.validate[AddSecureTextRequest].fold (
       valid = { request =>
-        apiService.addSecureText(request, "ahmetkucuk92@gmail.com").map{ result =>
+        apiService.addSecureText(request, email).map{ result =>
           if(result) {
             Ok(ResponseBase.success().toJson)
           } else {
@@ -49,12 +49,7 @@ class APIController extends Controller with DaoComponentImpl with ApiServiceComp
       }
     )
 
-//    apiService.addSecureText(new AddSecureTextRequest("ahmet"), email).map(r => Ok(String.valueOf(r)))
   }
-
-//  def getSecureTexts = Authenticated(parse.json) { (request, email, _) =>
-//    apiService.getSecureTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))
-//  }
 
   def getSecureTexts = Authenticated { (request, email, _) =>
     apiService.getSecureTexts(email).map(texts => Ok(ResponseListText(ResponseBase.success(), texts).toJson))

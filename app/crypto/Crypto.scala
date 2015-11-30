@@ -28,7 +28,6 @@ class JavaCryptoEncryption(algorithmName: String) extends Encryption {
 
   def encrypt(theText: String, secret: String): String = {
     def encodeBase64(bytes: Array[Byte]) = Base64.encodeBase64String(bytes)
-    Logger.debug("key:" + Base64.encodeBase64String(secret.getBytes("UTF-8")))
     encodeBase64(encryptBytes(theText.getBytes("UTF-8"), secret))
 //    new String(encryptBytes(text.getBytes, secret))
   }

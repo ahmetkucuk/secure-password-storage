@@ -87,9 +87,9 @@ object ResponseBase {
 
   def response(internalResponse: InternalResponse): JsValue = {
     if(internalResponse.status) {
-      ResponseBase.success(internalResponse.msg).toResultJson
+      ResponseBase.success(internalResponse.msg).toJson
     } else {
-      ResponseBase.error(internalResponse.msg).toResultJson
+      ResponseBase.error(internalResponse.msg).toJson
     }
   }
 

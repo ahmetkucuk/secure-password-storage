@@ -28,7 +28,7 @@ object Constants {
   }
 
 
-  val APPLICATION_SECRET = "0123456789012345"
+  val APPLICATION_SECRET = "oZKmLnwRUkKr97lb"
 
 
 

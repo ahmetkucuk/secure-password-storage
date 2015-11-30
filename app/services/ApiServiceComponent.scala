@@ -34,6 +34,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
   val apiService = new ApiServiceImpl
 
   val textMagicUrl: String = "https://www.textmagic.com/app/api?username=ahmetkucuk&password=t3RPUWKoXr&cmd=send&text=%s&phone=1%s&unicode=0";
+  val messageText: String = "%s use this key to get password. Secure Pass.";
 
   class ApiServiceImpl extends ApiService {
 
@@ -46,6 +47,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
       list.foreach(st => { st.encryptWith(secret) })
       list
     }
+
     override def getEncryptedTexts(email: String): Future[(String, List[SecureText])] = Future {
       val secret = randomAlphanumericString(16);
       val (secretPart1, secretPart2) = secret.splitAt(8);
@@ -55,8 +57,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
             sendSecret(user.phone, secretPart2);
           case _ =>
             Logger.debug("Could not find user: " + email);
-        }
-      )
+      })
 
       val list = apiDao.listTextOf(email)
       list.foreach(st => { st.encryptWith(secret) })
@@ -65,7 +66,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
 
     def sendSecret(number:String, secret: String): Unit = {
 
-      val url: String = String.format(textMagicUrl, secret, number)
+      val url: String = String.format(textMagicUrl, String.format(messageText, secret), number)
       Logger.debug(url)
 //      WS.url(url).get().map { response => Logger.debug("SMS is sended to " + number + " secret was " + secret + " response: " + response.body);}
     }

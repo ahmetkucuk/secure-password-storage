@@ -1,6 +1,6 @@
 <div class="dynamic_container">
     <div data-ng-show="showStatusMessage">
-        <label class="label label-warning">{{statusMessage}}</label>
+        <h1><label class="label label-warning">{{statusMessage}}</label></h1>
     </div>
     <div class="row top15">
         <div class="col-md-8">
@@ -56,7 +56,7 @@
                     <th>index</th>
                     <th>text</th>
                 </tr>
-                <tr ng-repeat="(index, text) in texts">
+                <tr ng-repeat="(index, text) in texts track by $index">
                     <td>{{index}}</td>
                     <td>{{text}}</td>
                 </tr>

@@ -54,7 +54,11 @@ app.factory('loader', function() {
             return false;
         } else if(status != SUCCESS_CODE) {
             console.log("Other error: " + responseData.status);
-            $scope.statusMessage = responseData.status;
+            $scope.statusMessage = responseData.msg;
+            return false;
+        } else if(status != SUCCESS_CODE) {
+            console.log("Other error: " + responseData.status);
+            $scope.statusMessage = responseData.msg;
             return false;
         }
         return true;
@@ -126,13 +130,6 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
                 $scope.texts[i] = textObj.text;
                 i = i+1;
             });
-
-
-            //console.log($scope.texts[0].text);
-            //var decrypted = $crypto.decrypt($scope.texts[1].text, "0123456789012345");
-            //console.log($crypto.decrypt($scope.texts[2].text, "0123456789012345"));
-            //console.log("3: "+ decrypted);
-
         });
     };
     getTexts();
@@ -170,7 +167,7 @@ app.controller("HomeCtrl", ["$scope", "$resource", "$location", "apiUrl", "loade
         setTimeout(function() {
             $scope.texts = null;
             window.location.reload(true);
-        }, 30000);
+        }, 300000);
     };
 }]);
 
