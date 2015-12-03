@@ -21,18 +21,7 @@ import scala.util.{Failure, Success}
 
 class APIController extends Controller with DaoComponentImpl with ApiServiceComponentImpl with WebCoreDaoComponentImpl with SessionServiceComponentImpl with AuthenticationHelper{
 
-//  def addSecureText = Authenticated(parse.json) { (request, email, _) =>
   def addSecureText = Authenticated(parse.json) { (request, email, _) =>
-
-//    Logger.debug("email: " + email)
-//
-//    def encodeBase64(bytes: Array[Byte]) = Base64.encodeBase64String(bytes)
-//    def decodeBase64(text: String) = Base64.decodeBase64(text)
-//
-//    val encrypted = encodeBase64(crypto.AES.encrypt("deneyelim", "0123456789012345"))
-//    Logger.debug("Encrypted: " + encrypted)
-//    val decrypted = crypto.AES.decrypt(decodeBase64(encrypted), "0123456789012345")
-//    Logger.debug("Decrypted: " + decrypted)
 
     request.body.validate[AddSecureTextRequest].fold (
       valid = { request =>

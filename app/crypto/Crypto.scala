@@ -46,14 +46,6 @@ class JavaCryptoEncryption(algorithmName: String) extends Encryption {
     encipher.doFinal(bytes)
   }
 
-  //    def encodeBase64(bytes: Array[Byte]) = Base64.encodeBase64String(bytes)
-  //    def decodeBase64(text: String) = Base64.decodeBase64(text)
-  //
-  //    val encrypted = encodeBase64(crypto.AES.encrypt("deneyelim", "0123456789012345"))
-  //    Logger.debug("Encrypted: " + encrypted)
-  //    val decrypted = crypto.AES.decrypt(decodeBase64(encrypted), "0123456789012345")
-  //    Logger.debug("Decrypted: " + decrypted)
-
 
 }
 

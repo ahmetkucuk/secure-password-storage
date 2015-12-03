@@ -33,7 +33,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
 
   val apiService = new ApiServiceImpl
 
-  val textMagicUrl: String = "https://www.textmagic.com/app/api?username=ahmetkucuk&password=t3RPUWKoXr&cmd=send&text=%s&phone=1%s&unicode=0";
+  val textMagicUrl: String = "https://www.textmagic.com/app/api?username=****&password=*****t&cmd=send&text=%s&phone=1%s&unicode=0";
   val messageText: String = "%s use this key to get password. Secure Pass.";
 
   class ApiServiceImpl extends ApiService {
@@ -68,7 +68,7 @@ trait ApiServiceComponentImpl extends ApiServiceComponent with RandomKeyGenerato
 
       val url: String = String.format(textMagicUrl, String.format(messageText, secret), number)
       Logger.debug(url)
-//      WS.url(url).get().map { response => Logger.debug("SMS is sended to " + number + " secret was " + secret + " response: " + response.body);}
+      WS.url(url).get().map { response => Logger.debug("SMS is sended to " + number + " secret was " + secret + " response: " + response.body);}
     }
   }
 

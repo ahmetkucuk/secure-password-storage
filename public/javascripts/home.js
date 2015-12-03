@@ -1,5 +1,5 @@
 var app = angular.module("app", ["ngResource", "ngRoute", "mdo-angular-cryptography", "ngProgress"])
-    .constant("apiUrl", "http://127.0.0.1:9000/api/")
+    .constant("apiUrl", "https://127.0.0.1:9443/api/")
     .config(["$routeProvider", function($routeProvider) {
         return $routeProvider.when("/", {
             templateUrl: "/assets/html/home-list.html",
@@ -27,6 +27,7 @@ var app = angular.module("app", ["ngResource", "ngRoute", "mdo-angular-cryptogra
         }
     ]).config([
         '$cryptoProvider', function($cryptoProvider){
+            //Default key, This key is not used in the application.
             $cryptoProvider.setCryptographyKey('0123456789012345');
         }
     ]);
