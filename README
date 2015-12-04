@@ -4,3 +4,5 @@ It securely stores password(or any text) in server side. It uses Https with AES 
 For the SMS API, it uses textmagic.com as a service.
 
 It is a web application developed in Scala on Play Framework, client side on Angular JS + Bootstrap.
+
+It is useful if you like to see how it to encypt a text with AES in server side using Scala/Java and decypt it on client side using Javascript.
