@@ -1,4 +1,6 @@
-This is your new Play application
-=================================
+This is a Network Security course project.
 
-This file will be packaged with your application, when using `activator dist`.
+It securely stores password(or any text) in server side. It uses Https with AES encyption. AES key exchange is done using SMS. 
+For the SMS API, it uses textmagic.com as a service.
+
+It is a web application developed in Scala on Play Framework, client side on Angular JS + Bootstrap.
