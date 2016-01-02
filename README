@@ -1,8 +1,8 @@
-This is a Network Security course project.
+This is my Network Security course project at GSU.
 
-It securely stores password(or any text) in server side. It uses Https with AES encyption. AES key exchange is done using SMS. 
+It securely stores password(or any text) in server side. It uses Https and AES encryption. AES key exchange is done using SMS. 
 For the SMS API, it uses textmagic.com as a service.
 
 It is a web application developed in Scala on Play Framework, client side on Angular JS + Bootstrap.
 
-It is useful if you like to see how it to encypt a text with AES in server side using Scala/Java and decypt it on client side using Javascript.
+It is useful if you like to see how to encypt a text with AES in server side using Scala/Java and decypt it on client side using Javascript.
